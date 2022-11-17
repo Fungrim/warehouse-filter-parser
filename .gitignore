@@ -1,0 +1,6 @@
+.vscode
+parser/bin/
+parser/obj/
+parser/.antlr
+parserTest/bin/
+parserTest/obj/
