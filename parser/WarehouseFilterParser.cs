@@ -121,12 +121,13 @@ namespace WarehouseFilterParser {
             if (context.op.EQ() != null)
             {
                 var l = this.Visit(context.left);
+                var r = this.Visit(context.right);
                 // TODO more robust type checking
                 if(l.GetType() == typeof(String)) 
                 {
-                    return ToUnqoutedString(l).Equals(ToUnqoutedString(this.Visit(context.right)));
+                    return ToUnqoutedString(l).Equals(ToUnqoutedString(r));
                 } else {
-                    return l.Equals(this.Visit(context.right));
+                    return l.Equals(r);
                 }
             }
             else if (context.op.LE() != null)
@@ -146,7 +147,15 @@ namespace WarehouseFilterParser {
                 return AsDouble(context.left) > AsDouble(context.right);
             } 
             else if (context.op.NE() != null) {
-                return !this.Visit(context.left).Equals(this.Visit(context.right));
+                var l = this.Visit(context.left);
+                var r = this.Visit(context.right);
+                // TODO more robust type checking
+                if(l.GetType() == typeof(String)) 
+                {
+                    return !ToUnqoutedString(l).Equals(ToUnqoutedString(r));
+                } else {
+                    return ! l.Equals(r);
+                }
             }
             throw new ApplicationException("not implemented: comparator operator " + context.op.GetText());
         }

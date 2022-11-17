@@ -15,7 +15,7 @@ namespace WarehouseFilterParserTest {
             skus.Add("a1");
             skus.Add("a2");
             var o = new Order("DE", skus);
-            Assert.IsTrue(new Parser(o, w).Evaluate("lineItems_contains_sku(\"a1\") AND is_fulfillable() AND NOT shippingAddress.country = \"SE\"")); 
+            Assert.IsTrue(new Parser(o, w).Evaluate("lineItems_contains_sku(\"a1\") AND is_fulfillable() AND shippingAddress.country != \"SE\"")); 
         }
 
         [TestMethod]
@@ -27,6 +27,14 @@ namespace WarehouseFilterParserTest {
             var o = new Order("SE", skus);
             Assert.IsTrue(new Parser(o, w).Evaluate("lineItems_contains_sku(\"a1\")")); 
             Assert.IsFalse(new Parser(o, w).Evaluate("lineItems_contains_sku(\"a3\")")); 
+        }
+
+        [TestMethod]
+        public void ShouldHandleBothUnaryAndBinaryNegation() {
+            var w = new Warehouse(true);
+            var o = new Order("SE", new List<string>());
+            Assert.IsFalse(new Parser(o, w).Evaluate("shippingAddress.country != \"SE\"")); 
+            Assert.IsFalse(new Parser(o, w).Evaluate("NOT shippingAddress.country = \"SE\"")); 
         }
 
         [TestMethod]
